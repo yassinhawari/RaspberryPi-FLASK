@@ -97,7 +97,7 @@ Run the Flask app:
 python3 app.py
 ```
 Open a web browser and navigate to http://<your_raspberry_pi_ip>:5000 to view the sensor data.
-## Screenshots
+## Screenshot
 ![Capture](https://github.com/yassinhawari/RaspberryPi-FLASK/assets/107224248/f60f0f21-b17b-4c46-a6b2-0799b3f43aca)
 
 ## Contributing
