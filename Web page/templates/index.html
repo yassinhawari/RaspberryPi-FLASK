@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sensor-data {
+            margin-bottom: 20px;
+        }
+
+        .sensor-data div {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .signature-status .time  {
+            font-size: 18px;
+            color: #d9534f; /* default to red */
+            text-align: center;
+        }
+
+        .valid {
+            color: #5cb85c; /* green */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sensor Data</h1>
+        <div class="sensor-data">
+            <div><strong>Humidity:</strong> <span id="humidity">Loading...</span></div>
+            <div><strong>Temperature:</strong> <span id="temperature">Loading...</span></div>
+            <div><strong>Light:</strong> <span id="light">Loading...</span></div>
+            <div><strong>Mouvement:</strong> <span id="mouvement">Loading...</span></div>
+            <div><strong>Distance:</strong> <span id="distance">Loading...</span></div>
+            <div class="time"><strong>Without Parallalism Time:</strong> <span id="without_parallele_time">Loading...</span></div>
+            <div class="time"><strong>Parallalism Time:</strong> <span id="with_parallele_time">Loading...</span></div>
+        </div>
+        <div class="signature-status" id="signature-status">Signature Validity: <span id="signature-validity">Loading...</span></div>       
+    </div>
+    <script>
+        // Function to fetch sensor data via AJAX request
+        function fetchSensorData() {
+            fetch('/sensor_data')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('humidity').innerText = data.humidity;
+                document.getElementById('temperature').innerText = data.temperature;
+                document.getElementById('mouvement').innerText = data.mouvement;
+                document.getElementById('light').innerText = data.light;
+                document.getElementById('distance').innerText = data.distance;
+
+                document.getElementById('without_parallele_time').innerText = data.without_parallele_time;
+                document.getElementById('with_parallele_time').innerText = data.with_parallele_time;
+            });
+        }
+
+        // Function to fetch signature validity via AJAX request
+        function fetchSignatureValidity() {
+            fetch('/signature_validity')
+            .then(response => response.json())
+            .then(sig => {
+                document.getElementById('signature-validity').innerText = sig;
+            });
+        }
+
+        function fetchNonParaTime() {
+            fetch('/non_para_time')
+            .then(response => response.json())
+            .then(non_para => {
+                document.getElementById('without_parallele_time').innerText = non_para;
+            });
+        }
+
+        function fetchParaTime() {
+            fetch('/para_time')
+            .then(response => response.json())
+            .then(para => {
+                document.getElementById('with_parallele_time').innerText = para;
+            });
+        }
+        
+
+        // Fetch sensor data and signature validity initially
+        fetchSensorData();
+        fetchSignatureValidity();
+        fetchParaTime();
+        fetchNonParaTime();
+
+        // Polling interval in milliseconds (e.g., 5000 ms = 5 seconds)
+        const pollingInterval = 5000;
+
+        // Periodically fetch sensor data and signature validity
+        setInterval(() => {
+            fetchSensorData();
+            fetchSignatureValidity();
+            fetchParaTime();
+            fetchNonParaTime();
+        }, pollingInterval);
+    </script>
+</body>
+</html>
