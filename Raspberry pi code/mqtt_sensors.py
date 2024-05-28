@@ -4,7 +4,6 @@ import RPi.GPIO as GPIO
 import json
 import hashlib
 import ecdsa
-import random
 import time
 from datetime import datetime
 import multiprocessing
@@ -52,13 +51,13 @@ def read_ultrasonic_sensor():
 def read_ldr_sensor():
     return GPIO.input(27)
 
-#def read_dht11_sensor():
-#    humidity,temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
-#    if humidity is not None and temperature is not None:
-#        return temperature, humidity
-#    else:
-#		print("error temp")
-#        return "Failed to retrieve data from humidity sensor"
+def read_dht11_sensor():
+    humidity,temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
+    if humidity is not None and temperature is not None:
+        return temperature, humidity
+    else:
+	print("error temp")
+        return "Failed to retrieve data from humidity sensor"
         
 # Generate ECDSA key pair
 private_key = ecdsa.SigningKey.generate(curve=ecdsa.NIST256p)
@@ -81,16 +80,10 @@ publish.single("sensor/data",json.dumps(certificat),hostname="127.0.0.1")
 print(json.dumps(certificat))
 while True:
 	try:
-		#mouvement=read_pir_sensor()
-		#distance=read_ultrasonic_sensor()
-		#light=read_ldr_sensor()
-		#temperature, humidity=read_dht11_sensor()
-		
-		humidity = round(random.uniform(68.0, 72.0),2)
-		temperature = round(random.uniform(23.0, 24.5),2)
-		distance = round(random.uniform(30,120),2)
-		light= random.choice([0, 1])
-		mouvement= random.choice([0, 1])
+		mouvement=read_pir_sensor()
+		distance=read_ultrasonic_sensor()
+		light=read_ldr_sensor()
+		temperature, humidity=read_dht11_sensor()
 		
 		date=datetime.now().strftime("%H:%M:%S")
 		data = {"timestamp":date,"humidity": humidity,"temperature": temperature,"light": light,"mouvement":mouvement,"distance":distance}		
